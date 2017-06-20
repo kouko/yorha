@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <ul>
+        {% for field in form_html %}
+            <li>{{ field[0] }}{{ field[1] }}</li>
+        {% endfor %}
+        <li><input type="submit" value="SAVE"></li>
+    </ul>
+
+</form>
+{% endblock %}

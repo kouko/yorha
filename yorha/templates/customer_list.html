@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div>
+        <form method="POST" action="">
+            {{ filter_form.hidden_tag() }}
+
+            {{ filter_form.customer_responser.label }}
+            {{ filter_form.customer_responser }}<br>
+
+            {{ filter_form.customer_status.label }}
+            {{ filter_form.customer_status}}<br>
+
+            <input type="submit" value="SEARCH">
+        </form>
+        <ul>
+            {% if customer_list %}
+                {% for item in customer_list %}
+                    <li>
+                        <a href="{{ url_for('edit_customer', customer_uuid = item.customer_uuid) }}">
+                            {{ item.customer_name[-1] }} || {{ item.customer_status[-1] }}</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>==查無符合資料==</p>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}

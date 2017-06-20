@@ -1,0 +1,9 @@
+# 需求套件
+
+Flask
+Flask-Migrate
+Flask-Script
+Flask-SQLAlchemy
+Flask-OAuthlib
+Flask-WTF
+pyMySQL

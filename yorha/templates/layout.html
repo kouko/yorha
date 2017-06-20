@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width">
+        <meta charset="UTF-8">
+        <title>{{ page_title }}</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1>{{ page_title }}</h1>
+            <hr>
+        </header>
+        {% block body %}
+        {% endblock %}
+        <footer>
+            <hr>
+            <h4>MENU</h4>
+            <ul>
+                <li><a href="{{ url_for('list_customer') }}">CUSTOMERS LIST</a></li>
+                 <li><a href="{{ url_for('new_customer') }}">ADD NEW CUSTOMER</a></li>
+            </ul>
+            <h4>USER</h4>
+            <ul>
+                <li><b>{{ session['user_name'] }}</b> ( {{ session['user_email'] }} )</li>
+                <li>From IP : {{ request.remote_addr }}</li>
+                <li><a href="{{ url_for('logout')}}">LOGOUT</a></li>
+            </ul>
+        </footer>
+    </body>
+</html>

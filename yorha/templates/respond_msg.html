@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+<article>
+    <h1>{{ title }}</h1>
+    <aside>{{ msg }}</aside>
+    {% if continue_url %}
+        <button Type="button" onClick="location.href='{{ continue_url }}';">CONTINUE</button>
+    {% else %}
+        <button Type="button" onClick="history.back();return true;">BACK</button>
+    {% endif %}
+</article>
+{% endblock %}
