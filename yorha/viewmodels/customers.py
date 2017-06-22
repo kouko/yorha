@@ -35,23 +35,14 @@ def customer_filter(**kwarge):
     :param kwarge: customer_responser or customer_status
     :return: SQLAlchemy的 Customer object List。
     """
-    def force_to_list(value):
-        if type(value) != list:
-            value = [value]
-        return value
     # 先產生基本的query指令開頭
     result = Customer.query
     # 用loop讓所有User給的key都產生對應的Query指令
     for key,value in kwarge.items():
-        print(value)
-        if value is None:
-            # 如果key裡沒東西就不Filter
-            print('pass: ' + str(key))
-            pass
-        else:
-            # 如果有valie，先用這個神秘的招數把key name當成Class呼叫
+        if value not in [None, '', [''], []]:
+            # 如果valie不是空的話，先用這個神秘的招數把key name當成Class Name叫出該Class來
             target_class = getattr(importlib.import_module('yorha.models'),key)
-            # 呼叫latest_meta_status產生filter query
+            # 呼叫latest_meta_status產生filter subquery
             status_filter = latest_meta_status(target_class,value).subquery()
             # 把filter Query加入主要的result Query內
             result = result\
