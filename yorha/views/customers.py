@@ -83,31 +83,33 @@ def gen_customer_data_form(target_customer=None):
     from yorha.klibrary.type_converter import list2str, str2list ,str_list_converter
     from wtforms import validators
 
-    if target_customer is None:
-        customer = Customer()
-    else:
-        customer = target_customer
-
+    # 一個小函式來做出「取list的最後一個，如果list根本是空的的話就回傳None」
     def last_of_list(sorce_list):
         try:
             return sorce_list[-1]
         except IndexError:
             return None
 
+    # 如果沒有指定顧客，就創一個全新的Customer Class
+    if target_customer is None:
+        customer = Customer()
+    else:
+        customer = target_customer
 
-    def if_others(keyname):
+    # 自訂的WTForms validator，當指定的另一Field等於指定值時，此欄位為必填。用來實作使用者選擇「其他」時，需要另外填寫文字的檢查功能。
+    def field_related_data_required(related_field, related_value):
         from wtforms.validators import ValidationError
         def _if_others(form, field):
-            if form.data[keyname] == 'otehrs' and field.data == None:
+            if form.data[related_field] == related_value and field.data in [None, '', [], ['']]:
                 raise ValidationError('Error')
         return _if_others
 
-
+    # 依據設定產生WTForm定義Field的Dict物件
     table_column_key_dict = {}
     for key in app.config['CUSTOMER_SCHEMA']:
         validator_obj_list = []
         if key.validator != None:
-            if key.validator['required'] is True:
+            if key.validator.get('required') is True:
                 validator_obj_list.append(validators.DataRequired())
             elif key.validator.get('email') is True:
                 validator_obj_list.append(validators.Email())
@@ -120,7 +122,7 @@ def gen_customer_data_form(target_customer=None):
         elif key.type == 'OthersString':
             table_column_key_dict[key.table_name] = StringField(key.name,
                                                                 default=last_of_list(getattr(customer, key.table_name)),
-                                                                validators=[if_others(key.parents_table_name)])
+                                                                validators=[field_related_data_required(key.parents_table_name,'others')])
 
         elif key.type == 'SelectString':
             table_column_key_dict[key.table_name] = SelectField(key.name,
