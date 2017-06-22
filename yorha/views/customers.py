@@ -49,9 +49,9 @@ def list_customer():
     if request.method == 'POST':
         filter_key_in_url = ''
         for key in app.config['CUSTOMER_SCHEMA']:
-            if key.search_type == 'SelectString':
+            if key.search_type == 'SelectString' and filter_form.data[key.table_name] not in [None,'']:
                 filter_key_in_url += key.table_name + '=' + filter_form.data[key.table_name] + '&'
-            elif key.search_type == 'MultiSelectString':
+            elif key.search_type == 'MultiSelectString' and filter_form.data[key.table_name] not in [None, [],[''] ]:
                 filter_key_in_url += key.table_name + '=' + list2str(filter_form.data[key.table_name]) + '&'
         return redirect(url_for('list_customer') + '?' + filter_key_in_url )
 
