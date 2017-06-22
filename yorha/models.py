@@ -40,6 +40,14 @@ def init_customer_schema_collection():
         config_validator = item.get('validator')
         config_search_type = item.get('search_type')
 
+        # 從原始的option產生search時專用的option
+        config_search_option = []
+        if item.get('option') is not None:
+            for index, item in enumerate(config_option):
+                if item[0] != '':
+                    config_search_option.append(item)
+            config_search_option.insert(0, ('' ,'--') )
+
         # 從原始設定的type產生basic_db_model與field_type，方便DB與Form定義
         if config_type == 'String':
             basic_db_model = 'BasicStringModel'
@@ -68,6 +76,7 @@ def init_customer_schema_collection():
                 self.field_type = field_type
                 self.validator = config_validator
                 self.search_type = config_search_type
+                self.search_option = config_search_option
 
         keydata = KeyModel()
         # 將產生的Class放入List

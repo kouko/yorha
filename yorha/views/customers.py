@@ -37,9 +37,9 @@ def list_customer():
     customer_filter_form_key_dict = {}
     for key in app.config['CUSTOMER_SCHEMA']:
         if key.search_type == 'SelectString':
-            customer_filter_form_key_dict[key.table_name] = SelectField(key.name, choices=key.option, default=customer_filter_value_dict[key.class_name])
+            customer_filter_form_key_dict[key.table_name] = SelectField(key.name, choices=key.search_option, default=customer_filter_value_dict[key.class_name])
         elif key.search_type == 'MultiSelectString':
-            customer_filter_form_key_dict[key.table_name] = SelectMultipleField(key.name, choices=key.option, default= customer_filter_value_dict[key.class_name])
+            customer_filter_form_key_dict[key.table_name] = SelectMultipleField(key.name, choices=key.search_option, default= customer_filter_value_dict[key.class_name])
 
     # 產生FilterForm物件
     CustomerFilterForm = type('CustomerFilterForm',(FlaskForm,),customer_filter_form_key_dict)
