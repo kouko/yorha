@@ -124,9 +124,12 @@ class BasicCustomer():
 """
 customer_key_relationship = {}
 for key in app.config['CUSTOMER_SCHEMA']:
-    if key.search_type != None:
-        lazy_setting = ''
-    customer_key_relationship[key.table_name] = db.relationship(key.class_name, backref='customer', order_by= key.class_name + '.id' , lazy='dynamic')
+    # 如果設定有search_type的value，就代表此key會在list page上使用，為求效能會把關聯的lazy設定為joined，其他則設為dynamic
+    if key.search_type is not None:
+        lazy_setting = 'joined'
+    else:
+        lazy_setting = 'dynamic'
+    customer_key_relationship[key.table_name] = db.relationship(key.class_name, backref='customer', order_by= key.class_name + '.id', lazy=lazy_setting )
 
 
 """

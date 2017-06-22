@@ -23,7 +23,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True  # 要開才有辦法自動Migrade~
 """
 
 - 欄位順序：如果最後定義用的是Dict的話，好像需要？ 囧
--
+- 
 - name:顯示給使用者用的名稱：介面上會顯示的名稱
 - class：標準大駝峰寫法的名稱，當成Class名。系統會自動轉換成snake樣式當成DB table名。
 - type：資料格式與輸入樣式
@@ -43,34 +43,40 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True  # 要開才有辦法自動Migrade~
     'required':True 必填
     'email':True 信箱格式（實裝未確認）
 
+- select_type:
+    'display': 只顯示在list頁面，無法搜尋
+    'SelectString'：
+    'MultiSelectString'
+
 """
 CUSTOMER_DATA_COLUMN = [
     {'name': '顧客名稱',
      'class': 'CustomerName',
      'type': 'String',
-     'validator': {'required': True}
-    },
+     'validator': {'required': True},
+     'search_type': 'display'
+     },
     {'name': '負責人',
      'class': 'CustomerResponser',
      'type': 'SelectString',
-     'option': [('yihan.chang@ichef.com.tw','kouko1'),
-                ('yihan.chang2@ichef.com.tw','kouko2'),
-                ('yihan.chang3@ichef.com.tw','kouko3')],
+     'option': [('yihan.chang@ichef.com.tw', 'kouko1'),
+                ('yihan.chang2@ichef.com.tw', 'kouko2'),
+                ('yihan.chang3@ichef.com.tw', 'kouko3')],
      'validator': {'required': True},
-     'search_type':'SelectString'
-    },
+     'search_type': 'SelectString'
+     },
     {'name': '顧客狀態',
      'class': 'CustomerStatus',
      'type': 'SelectString',
-     'option': [('',''),
-                ('G1','狀態G1'),
-                ('G2','狀態G2'),
-                ('G3','狀態G3'),
-                ('G4','狀態G4'),
-                ('G5','狀態G5')],
+     'option': [('', ''),
+                ('G1', '狀態G1'),
+                ('G2', '狀態G2'),
+                ('G3', '狀態G3'),
+                ('G4', '狀態G4'),
+                ('G5', '狀態G5')],
      'validator': {'required': True},
-     'search_type':'MultiSelectString'
-    },
+     'search_type': 'MultiSelectString'
+     },
     {'name': '進線方式',
      'class': 'LeadsType',
      'type': 'SelectString',
@@ -94,10 +100,3 @@ CUSTOMER_DATA_COLUMN = [
                 ('G5', '狀態G5')]
      }
 ]
-
-CUSOMER_STATUS_OPTION = [('',''),
-                          ('G1','狀態G1'),
-                          ('G2','狀態G2'),
-                          ('G3','狀態G3'),
-                          ('G4','狀態G4'),
-                          ('G5','狀態G5')]
