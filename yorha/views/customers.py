@@ -25,21 +25,34 @@ def list_customer():
 
     from yorha.klibrary.type_converter import list2str, str2list
 
-    # 把URL內的parameter轉換成Dict
+    # 如果session裡沒有記錄上次filter狀態的「customer_filter_value_dict」時，就生一個空的Dict出來
+    if session.get('customer_filter_value_dict') is None:
+        session['customer_filter_value_dict'] = {}
+
+    # 初始化customer_filter_value_dict，開始處理filter value
     customer_filter_value_dict = {}
-    for key in app.config['CUSTOMER_SCHEMA']:
-        if key.search_type == 'SelectString':
-            customer_filter_value_dict[key.class_name] = request.args.get(key.table_name)
-        elif key.search_type == 'MultiSelectString':
-            customer_filter_value_dict[key.class_name] = str2list(request.args.get(key.table_name))
+    # 如果URL內根本沒有argument，就使用session內的filter value
+    if len(request.args) == 0:
+        customer_filter_value_dict = session['customer_filter_value_dict']
+    # 如果URL內有argument，就使用URL內的argument當成filter value
+    elif len(request.args) != 0:
+        # 將設定內所有search_type為指定值的欄位，填入URL裡同名argument的value
+        for key in app.config['CUSTOMER_SCHEMA']:
+            if key.search_type == 'SelectString':
+                customer_filter_value_dict[key.class_name] = request.args.get(key.table_name)
+            elif key.search_type == 'MultiSelectString':
+                customer_filter_value_dict[key.class_name] = str2list(request.args.get(key.table_name))
+        # 把這次的filter value存在session當下次的預設值用
+        session['customer_filter_value_dict'] = customer_filter_value_dict
+
 
     # 產生FilterForm的定義
     customer_filter_form_key_dict = {}
     for key in app.config['CUSTOMER_SCHEMA']:
         if key.search_type == 'SelectString':
-            customer_filter_form_key_dict[key.table_name] = SelectField(key.name, choices=key.search_option, default=customer_filter_value_dict[key.class_name])
+            customer_filter_form_key_dict[key.table_name] = SelectField(key.name, choices=key.search_option, default=customer_filter_value_dict.get(key.class_name))
         elif key.search_type == 'MultiSelectString':
-            customer_filter_form_key_dict[key.table_name] = SelectMultipleField(key.name, choices=key.search_option, default= customer_filter_value_dict[key.class_name])
+            customer_filter_form_key_dict[key.table_name] = SelectMultipleField(key.name, choices=key.search_option, default= customer_filter_value_dict.get(key.class_name))
 
     # 產生FilterForm物件
     CustomerFilterForm = type('CustomerFilterForm',(FlaskForm,),customer_filter_form_key_dict)
@@ -49,9 +62,9 @@ def list_customer():
     if request.method == 'POST':
         filter_key_in_url = ''
         for key in app.config['CUSTOMER_SCHEMA']:
-            if key.search_type == 'SelectString' and filter_form.data[key.table_name] not in [None,'']:
+            if key.search_type == 'SelectString' :
                 filter_key_in_url += key.table_name + '=' + filter_form.data[key.table_name] + '&'
-            elif key.search_type == 'MultiSelectString' and filter_form.data[key.table_name] not in [None, [],[''] ]:
+            elif key.search_type == 'MultiSelectString':
                 filter_key_in_url += key.table_name + '=' + list2str(filter_form.data[key.table_name]) + '&'
         return redirect(url_for('list_customer') + '?' + filter_key_in_url )
 
