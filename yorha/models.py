@@ -60,6 +60,23 @@ def init_customer_schema_collection():
         elif config_type == 'SelectMultipleField':
             basic_db_model = 'BasicStringModel'
             field_type = 'SelectMultipleField'
+
+        elif config_type == 'Integer':
+            basic_db_model = 'BasicIntegerModel'
+            field_type = 'IntegerField'
+
+        elif config_type == 'SelectInteger':
+            basic_db_model = 'BasicIntegerModel'
+            field_type = 'SelectField'
+
+        elif config_type == 'Float':
+            basic_db_model = 'BasicFloatModel'
+            field_type = 'FloatField'
+
+        elif config_type == 'SelectFloat':
+            basic_db_model = 'BasicFloatModel'
+            field_type = 'SelectField'
+
         else:
             basic_db_model = 'BasicStringModel'
             field_type = 'StringField'
@@ -151,7 +168,7 @@ Customer = type('Customer',(BasicCustomer, db.Model),customer_key_relationship)
 """
 建立基本的String Class
 """
-class BasicStringModel():
+class BasicModel():
     """
     定義最基本的String Data Model，包含新建資料時的LOG資訊與關聯。
     引用時記得要定義__tablename__
@@ -164,7 +181,7 @@ class BasicStringModel():
     def customer_uuid(cls):
         return db.Column(db.String(36), db.ForeignKey('customer.customer_uuid'), index=True)
     # 主要資料
-    value = db.Column(db.String(128), index=True)
+    value = ''
     # 初始化時自動填入現在時間與session內的user_email作為操作者記錄。
     def __init__(self, value):
         self.value = value
@@ -173,6 +190,11 @@ class BasicStringModel():
     # 定義class本體直接吐出value
     def __repr__(self):
         return self.value
+
+# 用BasicModel產生各種資料類型的BasicXXXModel
+BasicStringModel = type('BasicStringModel', (BasicModel,),{'value':db.Column(db.String(128), index=True)})
+BasicIntegerModel = type('BasicIntegerModel', (BasicModel,),{'value':db.Column(db.Integer, index=True)})
+BasicFloatModel = type('BasicFloatModel', (BasicModel,),{'value':db.Column(db.Float, index=True)})
 
 # 用Type魔法動態產生定義DB Table的Class
 for key in app.config['CUSTOMER_SCHEMA']:

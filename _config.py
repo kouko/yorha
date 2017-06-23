@@ -7,16 +7,16 @@ DEBUG = True
 
 # For Google Login
 GOOGLE_AUTH = True
-GOOGLE_CLIENT_ID =
-GOOGLE_CLIENT_SECRET =
-GOOGLE_CLIENT_LOGIN_DOMAIN_LIMIT =
+GOOGLE_CLIENT_ID =''
+GOOGLE_CLIENT_SECRET =''
+GOOGLE_CLIENT_LOGIN_DOMAIN_LIMIT =''
 
 # For Session 安全性
-SECRET_KEY =
+SECRET_KEY =''
 PERMANENT_SESSION_LIFETIME = 43200  # Session過期時間，單位應該是秒
 
 # For SQLALchemy 資料庫設定
-SQLALCHEMY_DATABASE_URI =
+SQLALCHEMY_DATABASE_URI =''
 SQLALCHEMY_TRACK_MODIFICATIONS = True  # 要開才有辦法自動Migrade~
 
 # 資料欄位設定
@@ -31,8 +31,11 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True  # 要開才有辦法自動Migrade~
     SelectString：文字選項
     MultiSelectString：多選文字選項（未實裝對應的搜尋功能）
 
-    Interger：整數（未實裝）
-    SelectInterger：數字選項（未實裝）
+    Integer：整數（未實裝）
+    SelectInteger：數字選項（未實裝）
+    
+    Float: 浮點數（未實裝）
+    SelectFloat：浮點數選項（未實裝）
 
 
 - option：如果輸入樣式是有限選項形式的話，那就會有選項的設定。
@@ -42,7 +45,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True  # 要開才有辦法自動Migrade~
 - validator:
     'required':True 必填
     'email':True 信箱格式（實裝未確認）
-
+    
 - select_type:
     'display': 只顯示在list頁面，無法搜尋
     'SelectString'：
